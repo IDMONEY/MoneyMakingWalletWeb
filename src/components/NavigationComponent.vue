@@ -2,10 +2,18 @@
     <div v-if="account.status.loggingIn">
         <div class="page-container md-layout-column">
             <md-toolbar class="md-primary">
-            <md-button class="md-icon-button" @click="showNavigation = true">
-                <md-icon>menu</md-icon>
-            </md-button>
-            <span class="md-title">ID Money</span>
+                <div class="md-toolbar-section-start">
+                    <md-button class="md-icon-button" @click="showNavigation = true">
+                        <md-icon>menu</md-icon>
+                    </md-button>
+                    <span class="md-title">ID Money</span>
+                </div>
+                <div class="md-toolbar-section-end">
+                    <md-button class="md-icon-button" @click="refresh()">
+                        <md-icon>refresh</md-icon>
+                    </md-button>
+                    <md-button class="md-primary" @click="logout_()">Logout</md-button>
+                </div>
             </md-toolbar>
             <md-drawer :md-active.sync="showNavigation">
                 <md-toolbar class="md-transparent" md-elevation="0">
@@ -55,6 +63,10 @@
             logout_(){
                 this.logout();
             },  
+
+            refresh(){
+                this.$forceUpdate();
+            },
             
             /*redirectUsersManager(){
                 router.push('/usersmanager');
