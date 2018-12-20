@@ -2,26 +2,51 @@
   <div class="padding-top-10">
     <b-container fluid>                             
         <b-row >
-            <b-col cols="12" sm="12" md="12">
-                <b-card no-body  header="<b class=card-title>Recent Activity</b>">
-                    <b-list-group>
-                        <b-list-group-item v-for="(transaction, index) in transactions" :index="index" :key="index" href="#" class="flex-column align-items-start">
-                            <div class="d-flex w-100 justify-content-between">
-                                <h5 class="mb-1">{{ transaction.description }}</h5>
-                                <small class="text-muted" v-if="transaction.status === 'Registered'">{{transaction.processingDate | moment("d MMMM YYYY") }}</small>
-                                <small class="text-muted" v-else>{{transaction.registrationDate | moment("d MMMM YYYY") }}</small>
+             <b-col cols="12" sm="12" md="12">
+                <div class="card">
+
+                <!-- Card image -->
+                <!--<img class="card-img-top" src="https://mdbootstrap.com/img/Photos/Others/images/43.jpg" alt="Card image cap">-->
+
+                <!-- Card content -->
+                <div class="card-body">
+                    <b-row >
+                            <b-col cols="12" sm="12" md="6">
+                                <div class="card-body">
+                                    <p class="card-text-label" v-if="transaction.status === 'Processed'">{{transaction.processingDate | moment("MMMM D, YYYY hh:MM:SS A") }}</p>
+                                    <p class="card-text-label" v-else>{{transaction.registrationDate | moment("MMMM D, YYYY hh:MM:SS A") }}</p>
+                                    <p class="card-text">{{transaction.description}}</p>
+
+                                    <p class="card-text-label margin-top-30">Category</p>
+                                    <p class="card-text">Unknown</p>   
+
+                                    <p class="card-text-label margin-top-20">Transaction ID</p>
+                                    <p class="card-text">{{transaction.id}}</p>                                    
+                                    
+
                                 </div>
-                                <!--<p class="mb-1">
-                                    {{ transaction.description }}
-                                </p>-->
-                                <small class="transaction-amount" v-bind:class="{ 'amount-positive' : transaction.amount >  0 && transaction.status === 'Processed'}">{{transaction.amount}} {{account.user.user.account.symbol}}</small>
-                                <br />
-                                <small v-bind:class="classStatus(transaction)">{{transaction.status}}</small>
-                               
-                        </b-list-group-item>
-                    </b-list-group>
-                </b-card>
-            </b-col>         
+                        </b-col>
+                                <b-col cols="12" sm="12" md="6">
+                                <div class="card-body">
+                                    <h4 class="card-title card-title-right"><a><small class="transaction-amount" v-bind:class="{ 'amount-positive' : transaction.amount >  0 && transaction.status === 'Processed'}">{{transaction.amount}} {{account.user.user.account.symbol}}</small></a></h4>
+
+                      
+                                    <p class="card-text-label margin-top-30">Transaction Details</p>
+                                    <p class="card-text">{{transaction.amount}} {{account.user.user.account.symbol}}</p>           
+
+                                    <p class="card-text-label margin-top-20">Sent From</p>
+                                    <p class="card-text">{{from.address}}</p>  
+
+                                    <p class="card-text-label margin-top-20">Received By</p>
+                                    <p class="card-text">{{to.address}}</p>                                                               
+                                
+                                </div>
+                        </b-col>
+                </b-row>
+                </div>
+
+                </div>
+             </b-col>
         </b-row>
     </b-container>
   </div>
@@ -29,16 +54,17 @@
 
 <script>
 import { Container, Draggable } from 'vue-smooth-dnd';
-import fab from 'vue-fab';
 import { mapState, mapActions } from 'vuex'
 import {transactionsService} from '../shared/services';
 
 export default {
   name: 'TransactionDetails',
-  components: {fab},
   data () {
     return {        
-        transactions : [],
+        transaction : null,
+        from: null,
+        to: null,
+        id : null,
         //loading: true,
         bgColor: '#778899'
 
@@ -49,10 +75,6 @@ export default {
             account: state => state.account
         })
     },
-
-    /*created () {
-        this.getAllBusinesses();
-    }*/
     methods: {         
        ...mapActions('account', ['logout']),
 
@@ -62,16 +84,16 @@ export default {
         log (...params) {
             console.log(...params)
         },
-        getLastTransactions(){
+        getTransactionDetails(){
             //this.loading = true;
             this.transactions = [];
 
-            transactionsService.getPersonalTransactions()
+            transactionsService.getTransaction(this.$route.params.id)
                                .then(data =>
                                {
-                                   data.forEach(transaction => {
-                                       this.transactions.push(transaction);
-                                   });
+                                    this.transaction = data.transaction;
+                                    this.from = data.from;
+                                    this.to=  data.to;
                                })
         },
         classStatus : function(transaction){
@@ -79,26 +101,15 @@ export default {
         }
     },
      mounted (){
-        this.getLastTransactions();
+        this.getTransactionDetails();
     }
 }
 </script>
 
 <style scoped>
-  .padding-top-10{
-      padding-top: 10px
-  }
-  th {
-        cursor:pointer;
-        white-space: nowrap;
-    }
-    tr {
-    white-space: nowrap;
-    }
-    .table td, .table th{
-        padding:.5rem;
-    }
-    .list-group a, .list-group a:hover{text-decoration: none;color:#2c2e2f}
+    p{margin-bottom: 0.25rem}
+    .card{text-align: left;}
+    .card-text-label{font-weight: bold;}
     .amount-positive{color:#299976;font-weight: bold;}
     .status-processed{color:#000}
     .status-rejected{color:#721c24}

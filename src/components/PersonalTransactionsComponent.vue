@@ -6,11 +6,11 @@
                 <!--<b-card no-body  header="<b class=card-title>My Recent Activity</b><span class='card-title-more'><a href='#'>More </a> <span class='md-icon'>chevron_right</span></span>">-->
                 <b-card no-body  header="<b class=card-title>My Recent Activity</b>">
                     <b-list-group>
-                        <b-list-group-item v-for="(transaction, index) in transactions" :index="index" :key="index" href="#" class="flex-column align-items-start">
+                        <b-list-group-item v-for="(transaction, index) in transactions" :index="index" :key="index" class="flex-column align-items-start" :to="{ name: 'transaction', params: { id: transaction.id }}">
                             <div class="d-flex w-100 justify-content-between">
                                 <h5 class="mb-1">{{ transaction.description }}</h5>
-                                <small class="text-muted" v-if="transaction.status === 'Processed'">{{transaction.processingDate | moment("DD MMMM YYYY") }}</small>
-                                <small class="text-muted" v-else>{{transaction.registrationDate | moment("DD MMMM YYYY") }}</small>
+                                <small class="text-muted" v-if="transaction.status === 'Processed'">{{transaction.processingDate | moment("D MMMM YYYY") }}</small>
+                                <small class="text-muted" v-else>{{transaction.registrationDate | moment("D MMMM YYYY") }}</small>
                                 </div>
                                 <!--<p class="mb-1">
                                     {{ transaction.description }}

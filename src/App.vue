@@ -113,4 +113,11 @@ table tr:hover>td {
 
 
     .margin-top-10{margin-top:10px;}
+    .margin-top-15{margin-top:15px;}
+    .margin-top-20{margin-top:20px;}
+    .margin-top-25{margin-top:25px;}
+    .margin-top-30{margin-top:30px;}
+      .padding-top-10{
+      padding-top: 10px
+  }
 </style>

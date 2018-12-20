@@ -5,7 +5,8 @@ import { authHeader } from '../helpers';
 
 export const transactionsService = {
     getPersonalTransactions,
-    getBusinessTransactions
+    getBusinessTransactions,
+    getTransaction
 };
 
 function getPersonalTransactions() {
@@ -19,6 +20,14 @@ function getPersonalTransactions() {
 function getBusinessTransactions() {
     return axios.get(`${config.API_URL}/transactions/business`, { headers :  authHeader() })
                 .then(response => (this.info = response.data.transactions))
+                .catch(err => {
+                    console.log(err);
+                 });
+}
+
+function getTransaction(id) {
+    return axios.get(`${config.API_URL}/transactions/${id}`, { headers :  authHeader() })
+                .then(response => (this.info = response.data))
                 .catch(err => {
                     console.log(err);
                  });
